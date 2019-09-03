@@ -13,6 +13,9 @@ class Policy {
 
 class Behavior {
     m_eStatus: number;
+    constructor() {
+        this.m_eStatus = Status.BH_INVALID;
+    }
 
     tick(): number {
         if (this.m_eStatus != Status.BH_RUNNING) {
@@ -75,6 +78,8 @@ class Repeat extends Decorator {
 
     constructor(child: Behavior) {
         super(child);
+        this.m_iLimit = 0;
+        this.m_iCounter = 0;
     }
 
     setCount(count: number) {
@@ -120,15 +125,21 @@ class Sequence extends Composite {
     m_CurrentIndex: number;
     m_CurrentChild: Behavior;
 
+    constructor() {
+        super();
+        this.m_CurrentIndex = 0;
+        this.m_CurrentChild = new Behavior;
+    }
+
     onInitialize() {
         this.m_CurrentIndex = 0;
         this.m_CurrentChild = this.m_Children[this.m_CurrentIndex];
     }
 
-    update() {
+    update(): number {
         // Keep going until a child behavior says it's running.
         while (1) {
-            let s: number = (this.m_CurrentChild).tick();
+            let s: number = this.m_CurrentChild.tick();
 
             // If the child fails, or keeps running, do the same.
             if (s != Status.BH_SUCCESS) {
@@ -142,12 +153,20 @@ class Sequence extends Composite {
             }
             this.m_CurrentChild = this.m_Children[this.m_CurrentIndex];
         }
+        return Status.BH_FAILURE;
     }
 }
 
 class Selector extends Composite {
     m_CurrentIndex: number;
     m_Current: Behavior;
+
+    constructor() {
+        super();
+        this.m_CurrentIndex = 0;
+        this.m_Current = new Behavior;
+    }
+
     onInitialize() {
         this.m_CurrentIndex = 0;
         this.m_Current = this.m_Children[this.m_CurrentIndex];
@@ -156,7 +175,7 @@ class Selector extends Composite {
     update(): number {
         // Keep going until a child behavior says its running.
         while (1) {
-            let s: number = (this.m_Current).tick();
+            let s: number = this.m_Current.tick();
 
             // If the child succeeds, or keeps running, do the same.
             if (s != Status.BH_FAILURE) {
@@ -170,6 +189,7 @@ class Selector extends Composite {
             }
             this.m_Current = this.m_Children[this.m_CurrentIndex];
         }
+        return Status.BH_FAILURE;
     }
 }
 
@@ -262,7 +282,7 @@ class ActiveSelector extends Selector {
 }
 
 //  测试相关
-class Test {
+export default class Test {
     static ASSERT(bool: boolean) {
         if (!bool) {
             console.log("ASSERT.bool == " + bool);
@@ -282,7 +302,7 @@ class Test {
         }
     }
 
-    static TEST_MockBehavior_TaskInitialize() {
+    static TEST_TaskInitialize() {
         let t = new MockBehavior();
         Test.CHECK_EQUAL(0, t.m_iInitializeCalled);
 
@@ -290,7 +310,7 @@ class Test {
         Test.CHECK_EQUAL(1, t.m_iInitializeCalled);
     }
 
-    static TEST_MockBehavior_TaskUpdate() {
+    static TEST_TaskUpdate() {
         let t = new MockBehavior();
         Test.CHECK_EQUAL(0, t.m_iUpdateCalled);
 
@@ -298,7 +318,7 @@ class Test {
         Test.CHECK_EQUAL(1, t.m_iUpdateCalled);
     }
 
-    static TEST_MockBehavior_TaskTerminate() {
+    static TEST_TaskTerminate() {
         let t = new MockBehavior();
         t.tick();
         Test.CHECK_EQUAL(0, t.m_iTerminateCalled);
@@ -309,25 +329,25 @@ class Test {
     }
 
     static TEST_SequenceTwoChildrenFails() {
-        let seq: MockComposite = new MockComposite(Sequence, 2);
+        let seq: MockSequence = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
-        seq[0].m_eReturnStatus = Status.BH_FAILURE;
+        seq.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
         Test.CHECK_EQUAL(seq.tick(), Status.BH_FAILURE);
         Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         Test.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
     }
 
     static TEST_SequenceTwoChildrenContinues() {
-        let seq: MockComposite = new MockComposite(Sequence, 2);
+        let seq: MockSequence = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
         Test.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
 
-        seq[0].m_eReturnStatus = Status.BH_SUCCESS;
+        seq.getOperator(0).m_eReturnStatus = Status.BH_SUCCESS;
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         Test.CHECK_EQUAL(1, seq.getOperator(1).m_iInitializeCalled);
@@ -336,34 +356,34 @@ class Test {
     static TEST_SequenceOneChildPassThrough() {
         let status: number[] = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
-            let seq: MockComposite = new MockComposite(Sequence, 1);
+            let seq: MockSequence = new MockSequence(1);
             Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
             Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
-            seq[0].m_eReturnStatus = status[i];
+            seq.getOperator(0).m_eReturnStatus = status[i];
             Test.CHECK_EQUAL(seq.tick(), status[i]);
             Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         }
     }
 
     static TEST_SelectorTwoChildrenContinues() {
-        let seq: MockComposite = new MockComposite(Selector, 2);
+        let seq: MockSelector = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
-        seq[0].m_eReturnStatus = Status.BH_FAILURE;
+        seq.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
 
     static TEST_SelectorTwoChildrenSucceeds() {
-        let seq: MockComposite = new MockComposite(Selector, 2);
+        let seq: MockSelector = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
-        seq[0].m_eReturnStatus = Status.BH_SUCCESS;
+        seq.getOperator(0).m_eReturnStatus = Status.BH_SUCCESS;
         Test.CHECK_EQUAL(seq.tick(), Status.BH_SUCCESS);
         Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
@@ -372,12 +392,12 @@ class Test {
         let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
             {
-                let seq: MockComposite = new MockComposite(Selector, 1);
+                let seq: MockSelector = new MockSelector(1);
 
                 Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
                 Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
-                seq[0].m_eReturnStatus = status[i];
+                seq.getOperator(0).m_eReturnStatus = status[i];
                 Test.CHECK_EQUAL(seq.tick(), status[i]);
                 Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
             }
@@ -433,7 +453,7 @@ class Test {
     }
 
     static TEST_ActiveBinarySelector() {
-        let sel: MockComposite = new MockComposite(ActiveSelector, 2);
+        let sel: MockActiveSelector = new MockActiveSelector(2);
 
         sel.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
         sel.getOperator(1).m_eReturnStatus = Status.BH_RUNNING;
@@ -473,6 +493,15 @@ class MockBehavior extends Behavior {
     m_eReturnStatus: number;
     m_eTerminateStatus: number;
 
+    constructor() {
+        super();
+        this.m_iInitializeCalled = 0;
+        this.m_iTerminateCalled = 0;
+        this.m_iUpdateCalled = 0;
+        this.m_eReturnStatus = Status.BH_RUNNING;
+        this.m_eTerminateStatus = Status.BH_INVALID;
+    }
+
     onInitialize() {
         ++this.m_iInitializeCalled;
     }
@@ -488,30 +517,52 @@ class MockBehavior extends Behavior {
     }
 }
 
-function createInstance<T extends Composite>(c: new () => T): T {
+function createInstance<T>(c: new () => T): T {
     return new c();
 }
 
-class MockComposite extends Composite {
-    tmplateClass: Composite;
-    constructor(type: new () => Composite, size: number) {
+class MockSelector extends Selector {
+    constructor(size: number) {
         super();
-        this.tmplateClass = createInstance(type);
         for (let i = 0; i < size; i++) {
-            this.getChildren().push(new MockBehavior);
+            this.m_Children.push(new MockBehavior);
+        }
+    }
+
+    getOperator(index: number): MockBehavior {
+        Test.ASSERT(index < this.m_Children.length);
+        return this.m_Children[index] as MockBehavior;
+    }
+}
+
+class MockSequence extends Sequence {
+    constructor(size: number) {
+        super();
+        for (let i = 0; i < size; i++) {
+            this.m_Children.push(new MockBehavior);
         }
     }
 
     onDestroy() {
-        this.getChildren().length = 0;
-    }
-
-    getChildren() {
-        return this.tmplateClass.m_Children;
+        this.m_Children.length = 0;
     }
 
     getOperator(index: number): MockBehavior {
-        Test.ASSERT(index < this.getChildren().length);
-        return this.getChildren()[index] as MockBehavior;
+        Test.ASSERT(index < this.m_Children.length);
+        return this.m_Children[index] as MockBehavior;
+    }
+}
+
+class MockActiveSelector extends ActiveSelector {
+    constructor(size: number) {
+        super();
+        for (let i = 0; i < size; i++) {
+            this.m_Children.push(new MockBehavior);
+        }
+    }
+
+    getOperator(index: number): MockBehavior {
+        Test.ASSERT(index < this.m_Children.length);
+        return this.m_Children[index] as MockBehavior;
     }
 }
