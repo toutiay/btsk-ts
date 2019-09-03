@@ -119,7 +119,7 @@ class Sequence extends Composite {
             }
             // Hit the end of the array, job done!
             this.m_CurrentIndex++;
-            if (this.m_CurrentIndex == this.m_Children.length - 1) {
+            if (this.m_CurrentIndex == this.m_Children.length) {
                 return Status.BH_SUCCESS;
             }
             this.m_CurrentChild = this.m_Children[this.m_CurrentIndex];
@@ -147,7 +147,7 @@ class Selector extends Composite {
             }
             this.m_CurrentIndex++;
             // Hit the end of the array, it didn't end well...
-            if (this.m_CurrentIndex == this.m_Children.length - 1) {
+            if (this.m_CurrentIndex == this.m_Children.length) {
                 return Status.BH_FAILURE;
             }
             this.m_Current = this.m_Children[this.m_CurrentIndex];
@@ -211,13 +211,13 @@ class Monitor extends Parallel {
 }
 class ActiveSelector extends Selector {
     onInitialize() {
-        this.m_Current = this.m_Children[this.m_Children.length - 1];
+        this.m_Current = this.m_Children[this.m_Children.length];
     }
     update() {
         let previous = this.m_Current;
         super.onInitialize();
         let result = super.update();
-        if (previous != this.m_Children[this.m_Children.length - 1] && this.m_Current != previous) {
+        if (previous != this.m_Children[this.m_Children.length] && this.m_Current != previous) {
             previous.onTerminate(Status.BH_ABORTED);
         }
         return result;
@@ -413,40 +413,40 @@ class MockBehavior extends Behavior {
 function createInstance(c) {
     return new c();
 }
+function createSize(target, size) {
+    for (let i = 0; i < size; i++) {
+        target.m_Children.push(new MockBehavior);
+    }
+}
+function getMock(target, index) {
+    Test.ASSERT(index < target.m_Children.length);
+    return target.m_Children[index];
+}
 class MockSelector extends Selector {
     constructor(size) {
         super();
-        for (let i = 0; i < size; i++) {
-            this.m_Children.push(new MockBehavior);
-        }
+        createSize(this, size);
     }
     getOperator(index) {
-        Test.ASSERT(index < this.m_Children.length);
-        return this.m_Children[index];
+        return getMock(this, index);
     }
 }
 class MockSequence extends Sequence {
     constructor(size) {
         super();
-        for (let i = 0; i < size; i++) {
-            this.m_Children.push(new MockBehavior);
-        }
+        createSize(this, size);
     }
     getOperator(index) {
-        Test.ASSERT(index < this.m_Children.length);
-        return this.m_Children[index];
+        return getMock(this, index);
     }
 }
 class MockActiveSelector extends ActiveSelector {
     constructor(size) {
         super();
-        for (let i = 0; i < size; i++) {
-            this.m_Children.push(new MockBehavior);
-        }
+        createSize(this, size);
     }
     getOperator(index) {
-        Test.ASSERT(index < this.m_Children.length);
-        return this.m_Children[index];
+        return getMock(this, index);
     }
 }
 //# sourceMappingURL=BehaviorTree.js.map

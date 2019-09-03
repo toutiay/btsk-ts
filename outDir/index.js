@@ -4,18 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BehaviorTree_1 = __importDefault(require("./BehaviorTree"));
-// Test.TEST_TaskInitialize()
-// Test.TEST_TaskUpdate()
-// Test.TEST_TaskTerminate()
-// Test.TEST_SequenceTwoChildrenFails()
+BehaviorTree_1.default.TEST_TaskInitialize();
+BehaviorTree_1.default.TEST_TaskUpdate();
+BehaviorTree_1.default.TEST_TaskTerminate();
+BehaviorTree_1.default.TEST_SequenceTwoChildrenFails();
 BehaviorTree_1.default.TEST_SequenceTwoChildrenContinues();
-// Test.TEST_SequenceOneChildPassThrough()
-// Test.TEST_SelectorTwoChildrenContinues()
-// Test.TEST_SelectorTwoChildrenSucceeds()
-// Test.TEST_SelectorOneChildPassThrough()
-// Test.TEST_ParallelSucceedRequireAll()
-// Test.TEST_ParallelSucceedRequireOne()
-// Test.TEST_ParallelFailureRequireAll()
-// Test.TEST_ParallelFailureRequireOne()
-// Test.TEST_ActiveBinarySelector()
+BehaviorTree_1.default.TEST_SequenceOneChildPassThrough();
+BehaviorTree_1.default.TEST_SelectorTwoChildrenContinues();
+BehaviorTree_1.default.TEST_SelectorTwoChildrenSucceeds();
+BehaviorTree_1.default.TEST_SelectorOneChildPassThrough();
+BehaviorTree_1.default.TEST_ParallelSucceedRequireAll();
+BehaviorTree_1.default.TEST_ParallelSucceedRequireOne();
+BehaviorTree_1.default.TEST_ParallelFailureRequireAll();
+BehaviorTree_1.default.TEST_ParallelFailureRequireOne();
+BehaviorTree_1.default.TEST_ActiveBinarySelector();
 //# sourceMappingURL=index.js.map
