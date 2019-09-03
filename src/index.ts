@@ -1,4 +1,4 @@
-import Test from "./Test";
+import Test from "./Test/Test";
 
 Test.TEST_TaskInitialize()
 
