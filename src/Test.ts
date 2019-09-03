@@ -1,4 +1,4 @@
-import { Status, MockBehavior, MockSequence, MockSelector, Policy, MockActiveSelector, Parallel } from "./BehaviorTree";
+import { Status, MockBehavior, MockSequence, MockSelector, Policy, MockActiveSelector, MockParallel } from "./BehaviorTree";
 
 //  测试相关
 export default class Test {
@@ -124,7 +124,7 @@ export default class Test {
     }
 
     static TEST_ParallelSucceedRequireAll() {
-        let parallel = new Parallel(Policy.RequireAll, Policy.RequireOne);
+        let parallel = new MockParallel(Policy.RequireAll, Policy.RequireOne);
         let children = [new MockBehavior(), new MockBehavior()];
         parallel.addChild(children[0]);
         parallel.addChild(children[1]);
@@ -137,7 +137,7 @@ export default class Test {
     }
 
     static TEST_ParallelSucceedRequireOne() {
-        let parallel = new Parallel(Policy.RequireOne, Policy.RequireAll);
+        let parallel = new MockParallel(Policy.RequireOne, Policy.RequireAll);
         let children = [new MockBehavior(), new MockBehavior()];
         parallel.addChild(children[0]);
         parallel.addChild(children[1]);
@@ -148,7 +148,7 @@ export default class Test {
     }
 
     static TEST_ParallelFailureRequireAll() {
-        let parallel = new Parallel(Policy.RequireOne, Policy.RequireAll);
+        let parallel = new MockParallel(Policy.RequireOne, Policy.RequireAll);
         let children = [new MockBehavior(), new MockBehavior()];
         parallel.addChild(children[0]);
         parallel.addChild(children[1]);
@@ -161,7 +161,7 @@ export default class Test {
     }
 
     static TEST_ParallelFailureRequireOne() {
-        let parallel = new Parallel(Policy.RequireAll, Policy.RequireOne);
+        let parallel = new MockParallel(Policy.RequireAll, Policy.RequireOne);
         let children = [new MockBehavior(), new MockBehavior()];
         parallel.addChild(children[0]);
         parallel.addChild(children[1]);
