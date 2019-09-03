@@ -1,4 +1,4 @@
-import Test from "./BehaviorTree";
+import Test from "./Test";
 
 Test.TEST_TaskInitialize()
 
