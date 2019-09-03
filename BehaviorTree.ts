@@ -11,47 +11,6 @@ class Policy {
     static RequireAll: number = 2;
 }
 
-class Test {
-    static CHECK(X: number) {
-        if (!X) {
-            console.log(X + " == ");
-        }
-    }
-
-    static CHECK_EQUAL(X: number, Y: number) {
-        if (X != Y) {
-            console.log("(" + X + " == " + Y + ") ");
-            console.log("expected:" + (X) + " actual:" + (Y) + " ");
-        }
-    }
-
-    static test_MockBehavior_TaskInitialize() {
-        let t = new MockBehavior();
-        Test.CHECK_EQUAL(0, t.m_iInitializeCalled);
-
-        t.tick();
-        Test.CHECK_EQUAL(1, t.m_iInitializeCalled);
-    }
-
-    static test_MockBehavior_TaskUpdate() {
-        let t = new MockBehavior();
-        Test.CHECK_EQUAL(0, t.m_iUpdateCalled);
-
-        t.tick();
-        Test.CHECK_EQUAL(1, t.m_iUpdateCalled);
-    }
-
-    static test_MockBehavior_TaskTerminate() {
-        let t = new MockBehavior();
-        t.tick();
-        Test.CHECK_EQUAL(0, t.m_iTerminateCalled);
-
-        t.m_eReturnStatus = Status.BH_SUCCESS;
-        t.tick();
-        Test.CHECK_EQUAL(1, t.m_iTerminateCalled);
-    }
-}
-
 class Behavior {
     m_eStatus: number;
 
@@ -99,28 +58,6 @@ class Behavior {
 
     getStatus(): number {
         return this.m_eStatus;
-    }
-}
-
-class MockBehavior extends Behavior {
-    m_iInitializeCalled: number;
-    m_iTerminateCalled: number;
-    m_iUpdateCalled: number;
-    m_eReturnStatus: number;
-    m_eTerminateStatus: number;
-
-    onInitialize() {
-        ++this.m_iInitializeCalled;
-    }
-
-    onTerminate(s: number) {
-        ++this.m_iTerminateCalled;
-        this.m_eTerminateStatus = s;
-    }
-
-    update() {
-        ++this.m_iUpdateCalled;
-        return this.m_eReturnStatus;
     }
 }
 
@@ -297,7 +234,6 @@ class Monitor extends Parallel {
     }
 
     addCondition(condition: Behavior) {
-
         this.m_Children.unshift(condition);
     }
 
@@ -322,5 +258,260 @@ class ActiveSelector extends Selector {
             previous.onTerminate(Status.BH_ABORTED);
         }
         return result;
+    }
+}
+
+//  测试相关
+class Test {
+    static ASSERT(bool: boolean) {
+        if (!bool) {
+            console.log("ASSERT.bool == " + bool);
+        }
+    }
+
+    static CHECK(X: number) {
+        if (!X) {
+            console.log("CHECK.X == " + X);
+        }
+    }
+
+    static CHECK_EQUAL(X: number, Y: number) {
+        if (X != Y) {
+            console.log("CHECK_EQUAL.(" + X + " == " + Y + ") ");
+            console.log("CHECK_EQUAL.expected:" + (X) + " actual:" + (Y) + " ");
+        }
+    }
+
+    static TEST_MockBehavior_TaskInitialize() {
+        let t = new MockBehavior();
+        Test.CHECK_EQUAL(0, t.m_iInitializeCalled);
+
+        t.tick();
+        Test.CHECK_EQUAL(1, t.m_iInitializeCalled);
+    }
+
+    static TEST_MockBehavior_TaskUpdate() {
+        let t = new MockBehavior();
+        Test.CHECK_EQUAL(0, t.m_iUpdateCalled);
+
+        t.tick();
+        Test.CHECK_EQUAL(1, t.m_iUpdateCalled);
+    }
+
+    static TEST_MockBehavior_TaskTerminate() {
+        let t = new MockBehavior();
+        t.tick();
+        Test.CHECK_EQUAL(0, t.m_iTerminateCalled);
+
+        t.m_eReturnStatus = Status.BH_SUCCESS;
+        t.tick();
+        Test.CHECK_EQUAL(1, t.m_iTerminateCalled);
+    }
+
+    static TEST_SequenceTwoChildrenFails() {
+        let seq: MockComposite = new MockComposite(Sequence, 2);
+
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq[0].m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_FAILURE);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
+    }
+
+    static TEST_SequenceTwoChildrenContinues() {
+        let seq: MockComposite = new MockComposite(Sequence, 2);
+
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
+
+        seq[0].m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(1, seq.getOperator(1).m_iInitializeCalled);
+    }
+
+    static TEST_SequenceOneChildPassThrough() {
+        let status: number[] = [Status.BH_SUCCESS, Status.BH_FAILURE];
+        for (let i = 0; i < status.length; i++) {
+            let seq: MockComposite = new MockComposite(Sequence, 1);
+            Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+            Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+            seq[0].m_eReturnStatus = status[i];
+            Test.CHECK_EQUAL(seq.tick(), status[i]);
+            Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        }
+    }
+
+    static TEST_SelectorTwoChildrenContinues() {
+        let seq: MockComposite = new MockComposite(Selector, 2);
+
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq[0].m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+
+    static TEST_SelectorTwoChildrenSucceeds() {
+        let seq: MockComposite = new MockComposite(Selector, 2);
+
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq[0].m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(seq.tick(), Status.BH_SUCCESS);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+
+    static TEST_SelectorOneChildPassThrough() {
+        let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
+        for (let i = 0; i < status.length; i++) {
+            {
+                let seq: MockComposite = new MockComposite(Selector, 1);
+
+                Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
+                Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+                seq[0].m_eReturnStatus = status[i];
+                Test.CHECK_EQUAL(seq.tick(), status[i]);
+                Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+            }
+        }
+    }
+
+    static TEST_ParallelSucceedRequireAll() {
+        let parallel = new Parallel(Policy.RequireAll, Policy.RequireOne);
+        let children = [new MockBehavior(), new MockBehavior()];
+        parallel.addChild(children[0]);
+        parallel.addChild(children[1]);
+
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[0].m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[1].m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(Status.BH_SUCCESS, parallel.tick());
+    }
+
+    static TEST_ParallelSucceedRequireOne() {
+        let parallel = new Parallel(Policy.RequireOne, Policy.RequireAll);
+        let children = [new MockBehavior(), new MockBehavior()];
+        parallel.addChild(children[0]);
+        parallel.addChild(children[1]);
+
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[0].m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(Status.BH_SUCCESS, parallel.tick());
+    }
+
+    static TEST_ParallelFailureRequireAll() {
+        let parallel = new Parallel(Policy.RequireOne, Policy.RequireAll);
+        let children = [new MockBehavior(), new MockBehavior()];
+        parallel.addChild(children[0]);
+        parallel.addChild(children[1]);
+
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[0].m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[1].m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(Status.BH_FAILURE, parallel.tick());
+    }
+
+    static TEST_ParallelFailureRequireOne() {
+        let parallel = new Parallel(Policy.RequireAll, Policy.RequireOne);
+        let children = [new MockBehavior(), new MockBehavior()];
+        parallel.addChild(children[0]);
+        parallel.addChild(children[1]);
+
+        Test.CHECK_EQUAL(Status.BH_RUNNING, parallel.tick());
+        children[0].m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(Status.BH_FAILURE, parallel.tick());
+    }
+
+    static TEST_ActiveBinarySelector() {
+        let sel: MockComposite = new MockComposite(ActiveSelector, 2);
+
+        sel.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
+        sel.getOperator(1).m_eReturnStatus = Status.BH_RUNNING;
+
+        Test.CHECK_EQUAL(sel.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(1, sel.getOperator(0).m_iInitializeCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+        Test.CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
+
+        Test.CHECK_EQUAL(sel.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(2, sel.getOperator(0).m_iInitializeCalled);
+        Test.CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+        Test.CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
+
+        sel.getOperator(0).m_eReturnStatus = Status.BH_RUNNING;
+        Test.CHECK_EQUAL(sel.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
+        Test.CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
+
+        sel.getOperator(0).m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(sel.tick(), Status.BH_SUCCESS);
+        Test.CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
+        Test.CHECK_EQUAL(3, sel.getOperator(0).m_iTerminateCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+        Test.CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
+    }
+}
+
+class MockBehavior extends Behavior {
+    m_iInitializeCalled: number;
+    m_iTerminateCalled: number;
+    m_iUpdateCalled: number;
+    m_eReturnStatus: number;
+    m_eTerminateStatus: number;
+
+    onInitialize() {
+        ++this.m_iInitializeCalled;
+    }
+
+    onTerminate(s: number) {
+        ++this.m_iTerminateCalled;
+        this.m_eTerminateStatus = s;
+    }
+
+    update() {
+        ++this.m_iUpdateCalled;
+        return this.m_eReturnStatus;
+    }
+}
+
+function createInstance<T extends Composite>(c: new () => T): T {
+    return new c();
+}
+
+class MockComposite extends Composite {
+    tmplateClass: Composite;
+    constructor(type: new () => Composite, size: number) {
+        super();
+        this.tmplateClass = createInstance(type);
+        for (let i = 0; i < size; i++) {
+            this.getChildren().push(new MockBehavior);
+        }
+    }
+
+    onDestroy() {
+        this.getChildren().length = 0;
+    }
+
+    getChildren() {
+        return this.tmplateClass.m_Children;
+    }
+
+    getOperator(index: number): MockBehavior {
+        Test.ASSERT(index < this.getChildren().length);
+        return this.getChildren()[index] as MockBehavior;
     }
 }
