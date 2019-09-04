@@ -1,6 +1,6 @@
 import { Behavior } from "./Behavior";
 import { Decorator } from "./Decorator";
-import { Status } from "./Status";
+import { Status } from "../Enum/Status";
 
 export class Repeat extends Decorator {
     m_iLimit: number;

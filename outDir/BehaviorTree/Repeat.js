@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Decorator_1 = require("./Decorator");
-const Status_1 = require("./Status");
+const Status_1 = require("../Enum/Status");
 class Repeat extends Decorator_1.Decorator {
     constructor(child) {
         super(child);

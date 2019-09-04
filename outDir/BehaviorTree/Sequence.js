@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Behavior_1 = require("./Behavior");
 const Composite_1 = require("./Composite");
-const Status_1 = require("./Status");
+const Status_1 = require("../Enum/Status");
 class Sequence extends Composite_1.Composite {
     constructor() {
         super();

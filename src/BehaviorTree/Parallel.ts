@@ -1,7 +1,7 @@
 import { Behavior } from "./Behavior";
 import { Composite } from "./Composite";
-import { Status } from "./Status";
-import { Policy } from "./Policy";
+import { Status } from "../Enum/Status";
+import { Policy } from "../Enum/Policy";
 
 export class Parallel extends Composite {
     m_eSuccessPolicy: number;

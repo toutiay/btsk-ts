@@ -1,4 +1,4 @@
-import { Policy } from "./Policy";
+import { Policy } from "../Enum/Policy";
 import { Behavior } from "./Behavior";
 import { Parallel } from "./Parallel";
 

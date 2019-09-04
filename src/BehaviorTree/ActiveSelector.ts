@@ -1,4 +1,4 @@
-import { Status } from "./Status";
+import { Status } from "../Enum/Status";
 import { Behavior } from "./Behavior";
 import { Selector } from "./Selector";
 

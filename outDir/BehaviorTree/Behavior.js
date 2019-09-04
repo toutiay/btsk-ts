@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Status_1 = require("./Status");
+const Status_1 = require("../Enum/Status");
 class Behavior {
     constructor() {
         this.m_eStatus = Status_1.Status.BH_INVALID;

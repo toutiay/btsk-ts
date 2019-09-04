@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Behavior_1 = require("../BehaviorTree/Behavior");
-const Status_1 = require("../BehaviorTree/Status");
+const Status_1 = require("../Enum/Status");
 class MockBehavior extends Behavior_1.Behavior {
     constructor() {
         super();

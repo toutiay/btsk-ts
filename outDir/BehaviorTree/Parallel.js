@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Composite_1 = require("./Composite");
-const Status_1 = require("./Status");
-const Policy_1 = require("./Policy");
+const Status_1 = require("../Enum/Status");
+const Policy_1 = require("../Enum/Policy");
 class Parallel extends Composite_1.Composite {
     constructor(forSuccess, forFailure) {
         super();

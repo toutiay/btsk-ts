@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Parallel_1 = require("../BehaviorTree/Parallel");
-const Status_1 = require("../BehaviorTree/Status");
-const Policy_1 = require("../BehaviorTree/Policy");
+const Status_1 = require("../Enum/Status");
+const Policy_1 = require("../Enum/Policy");
 const MockBehavior_1 = require("./MockBehavior");
 const MockComposite_1 = require("./MockComposite");
 //  测试相关

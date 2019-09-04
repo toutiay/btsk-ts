@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Policy_1 = require("./Policy");
+const Policy_1 = require("../Enum/Policy");
 const Parallel_1 = require("./Parallel");
 class Monitor extends Parallel_1.Parallel {
     constructor() {

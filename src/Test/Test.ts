@@ -1,6 +1,6 @@
 import { Parallel } from "../BehaviorTree/Parallel";
-import { Status } from "../BehaviorTree/Status";
-import { Policy } from "../BehaviorTree/Policy";
+import { Status } from "../Enum/Status";
+import { Policy } from "../Enum/Policy";
 import { MockBehavior } from "./MockBehavior";
 import { MockSequence, MockSelector, MockActiveSelector } from "./MockComposite";
 

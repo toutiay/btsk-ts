@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Status_1 = require("./Status");
+const Status_1 = require("../Enum/Status");
 const Selector_1 = require("./Selector");
 class ActiveSelector extends Selector_1.Selector {
     onInitialize() {

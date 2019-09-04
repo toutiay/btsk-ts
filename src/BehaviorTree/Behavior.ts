@@ -1,4 +1,4 @@
-import { Status } from "./Status";
+import { Status } from "../Enum/Status";
 
 export class Behavior {
     m_eStatus: number;
