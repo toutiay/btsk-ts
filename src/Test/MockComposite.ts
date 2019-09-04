@@ -45,23 +45,15 @@ export function createClass(fname: String, ftype: { new(): Composite; }) {
     let c: any = class extends ftype {
         constructor(size: number) {
             super();
-            createSize(this, size);
+            for (let i = 0; i < size; i++) {
+                this.m_Children.push(new MockBehavior);
+            }
         }
 
         getOperator(index: number): MockBehavior {
-            return getMock(this, index);
+            return this.m_Children[index] as MockBehavior;
         }
     }
     c.name = fname;
     return c;
-}
-
-function createSize(target: Composite, size: number) {
-    for (let i = 0; i < size; i++) {
-        target.m_Children.push(new MockBehavior);
-    }
-}
-
-function getMock(target: Composite, index: number): MockBehavior {
-    return target.m_Children[index] as MockBehavior;
 }
