@@ -1,3 +1,4 @@
+import { Default } from './../Enum/Default';
 import { Behavior } from "./Behavior";
 import { Composite } from "./Composite";
 import { Status } from "../Enum/Status";
@@ -9,7 +10,7 @@ export class Sequence extends Composite {
     constructor() {
         super();
         this.m_CurrentIndex = 0;
-        this.m_CurrentChild = new Behavior;
+        this.m_CurrentChild = Default.UNDEFINED;
     }
 
     onInitialize() {

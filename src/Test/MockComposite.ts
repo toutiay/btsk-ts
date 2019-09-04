@@ -4,37 +4,51 @@ import { Sequence } from "../BehaviorTree/Sequence";
 import { ActiveSelector } from "../BehaviorTree/ActiveSelector";
 import { Composite } from "../BehaviorTree/Composite";
 
-export class MockSelector extends Selector {
-    constructor(size: number) {
-        super();
-        createSize(this, size);
-    }
+// export class MockSelector extends Selector {
+//     constructor(size: number) {
+//         super();
+//         createSize(this, size);
+//     }
 
-    getOperator(index: number): MockBehavior {
-        return getMock(this, index);
-    }
-}
+//     getOperator(index: number): MockBehavior {
+//         return getMock(this, index);
+//     }
+// }
 
-export class MockSequence extends Sequence {
-    constructor(size: number) {
-        super();
-        createSize(this, size);
-    }
+// export class MockSequence extends Sequence {
+//     constructor(size: number) {
+//         super();
+//         createSize(this, size);
+//     }
 
-    getOperator(index: number): MockBehavior {
-        return getMock(this, index);
-    }
-}
+//     getOperator(index: number): MockBehavior {
+//         return getMock(this, index);
+//     }
+// }
 
-export class MockActiveSelector extends ActiveSelector {
-    constructor(size: number) {
-        super();
-        createSize(this, size);
-    }
+// export class MockActiveSelector extends ActiveSelector {
+//     constructor(size: number) {
+//         super();
+//         createSize(this, size);
+//     }
 
-    getOperator(index: number): MockBehavior {
-        return getMock(this, index);
+//     getOperator(index: number): MockBehavior {
+//         return getMock(this, index);
+//     }
+// }
+
+export function createInstance(fname: String, ftype: { new(): Composite; }) {
+    let c: any = class <fname> extends ftype {
+        constructor(size: number) {
+            super();
+            createSize(this, size);
+        }
+
+        getOperator(index: number): MockBehavior {
+            return getMock(this, index);
+        }
     }
+    return c;
 }
 
 function createSize(target: Composite, size: number) {

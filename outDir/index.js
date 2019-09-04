@@ -18,4 +18,7 @@ Test_1.default.TEST_ParallelSucceedRequireOne();
 Test_1.default.TEST_ParallelFailureRequireAll();
 Test_1.default.TEST_ParallelFailureRequireOne();
 Test_1.default.TEST_ActiveBinarySelector();
+// Test.TEST_TaskInitialize();
+// Test.TEST_TaskUpdate();
+// Test.TEST_TaskTerminate();
 //# sourceMappingURL=index.js.map

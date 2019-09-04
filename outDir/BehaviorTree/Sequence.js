@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Behavior_1 = require("./Behavior");
+const Default_1 = require("./../Enum/Default");
 const Composite_1 = require("./Composite");
 const Status_1 = require("../Enum/Status");
 class Sequence extends Composite_1.Composite {
     constructor() {
         super();
         this.m_CurrentIndex = 0;
-        this.m_CurrentChild = new Behavior_1.Behavior;
+        this.m_CurrentChild = Default_1.Default.UNDEFINED;
     }
     onInitialize() {
         this.m_CurrentIndex = 0;

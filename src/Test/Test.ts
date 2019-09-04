@@ -1,8 +1,15 @@
+import { ActiveSelector } from './../BehaviorTree/ActiveSelector';
+import { MockTask } from './../BehaviorTreeShared/MockTask';
 import { Parallel } from "../BehaviorTree/Parallel";
 import { Status } from "../Enum/Status";
 import { Policy } from "../Enum/Policy";
 import { MockBehavior } from "./MockBehavior";
-import { MockSequence, MockSelector, MockActiveSelector } from "./MockComposite";
+// import { MockSequence, MockSelector, MockActiveSelector } from "./MockComposite";
+import { MockNode } from "../BehaviorTreeShared/MockNode";
+import { Behavior } from "../BehaviorTreeShared/Behavior";
+import { createInstance } from './MockComposite';
+import { Sequence } from '../BehaviorTree/Sequence';
+import { Selector } from '../BehaviorTree/Selector';
 
 //  测试相关
 export default class Test {
@@ -52,7 +59,8 @@ export default class Test {
     }
 
     static TEST_SequenceTwoChildrenFails() {
-        let seq: MockSequence = new MockSequence(2);
+        let MockSequence = createInstance("MockSequence", Sequence);
+        let seq = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -64,7 +72,8 @@ export default class Test {
     }
 
     static TEST_SequenceTwoChildrenContinues() {
-        let seq: MockSequence = new MockSequence(2);
+        let MockSequence = createInstance("MockSequence", Sequence);
+        let seq = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -79,7 +88,8 @@ export default class Test {
     static TEST_SequenceOneChildPassThrough() {
         let status: number[] = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
-            let seq: MockSequence = new MockSequence(1);
+            let MockSequence = createInstance("MockSequence", Sequence);
+            let seq = new MockSequence(1);
             Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
             Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
 
@@ -90,7 +100,8 @@ export default class Test {
     }
 
     static TEST_SelectorTwoChildrenContinues() {
-        let seq: MockSelector = new MockSelector(2);
+        let MockSelector = createInstance("MockSelector", Selector);
+        let seq = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -101,7 +112,8 @@ export default class Test {
     }
 
     static TEST_SelectorTwoChildrenSucceeds() {
-        let seq: MockSelector = new MockSelector(2);
+        let MockSelector = createInstance("MockSelector", Selector);
+        let seq = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
         Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -115,7 +127,8 @@ export default class Test {
         let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
             {
-                let seq: MockSelector = new MockSelector(1);
+                let MockSelector = createInstance("MockSelector", Selector);
+                let seq = new MockSelector(1);
 
                 Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
                 Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -176,7 +189,8 @@ export default class Test {
     }
 
     static TEST_ActiveBinarySelector() {
-        let sel: MockActiveSelector = new MockActiveSelector(2);
+        let MockActiveSelector = createInstance("MockActiveSelector", ActiveSelector);
+        let sel = new MockActiveSelector(2);
 
         sel.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
         sel.getOperator(1).m_eReturnStatus = Status.BH_RUNNING;
@@ -207,4 +221,41 @@ export default class Test {
         Test.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
         Test.CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
     }
+
+
+    TEST_TaskInitialize() {
+        let n = new MockNode;
+        let b = new Behavior(n);
+
+        let t = b.get<MockTask>();
+
+        Test.CHECK_EQUAL(0, t.m_iInitializeCalled);
+
+        b.tick();
+        Test.CHECK_EQUAL(1, t.m_iInitializeCalled);
+    };
+
+    TEST_TaskUpdate() {
+        let n = new MockNode;
+        let b = new Behavior(n);
+
+        let t = b.get<MockTask>();
+        Test.CHECK_EQUAL(0, t.m_iUpdateCalled);
+
+        b.tick();
+        Test.CHECK_EQUAL(1, t.m_iUpdateCalled);
+    };
+
+    TEST_TaskTerminate() {
+        let n = new MockNode;
+        let b = new Behavior(n);
+        b.tick();
+
+        let t = b.get<MockTask>();
+        Test.CHECK_EQUAL(0, t.m_iTerminateCalled);
+
+        t.m_eReturnStatus = Status.BH_SUCCESS;
+        b.tick();
+        Test.CHECK_EQUAL(1, t.m_iTerminateCalled);
+    };
 }
