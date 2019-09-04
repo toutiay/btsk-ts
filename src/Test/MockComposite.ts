@@ -37,8 +37,12 @@ import { Composite } from "../BehaviorTree/Composite";
 //     }
 // }
 
-export function createInstance(fname: String, ftype: { new(): Composite; }) {
-    let c: any = class <fname> extends ftype {
+// function create<T>(c: { new(): T; }): T {
+//     return new c();
+// }
+
+export function createClass(fname: String, ftype: { new(): Composite; }) {
+    let c: any = class extends ftype {
         constructor(size: number) {
             super();
             createSize(this, size);
@@ -48,6 +52,7 @@ export function createInstance(fname: String, ftype: { new(): Composite; }) {
             return getMock(this, index);
         }
     }
+    c.name = fname;
     return c;
 }
 

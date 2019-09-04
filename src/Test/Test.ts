@@ -4,10 +4,9 @@ import { Parallel } from "../BehaviorTree/Parallel";
 import { Status } from "../Enum/Status";
 import { Policy } from "../Enum/Policy";
 import { MockBehavior } from "./MockBehavior";
-// import { MockSequence, MockSelector, MockActiveSelector } from "./MockComposite";
 import { MockNode } from "../BehaviorTreeShared/MockNode";
 import { Behavior } from "../BehaviorTreeShared/Behavior";
-import { createInstance } from './MockComposite';
+import { createClass } from './MockComposite';
 import { Sequence } from '../BehaviorTree/Sequence';
 import { Selector } from '../BehaviorTree/Selector';
 
@@ -59,7 +58,7 @@ export default class Test {
     }
 
     static TEST_SequenceTwoChildrenFails() {
-        let MockSequence = createInstance("MockSequence", Sequence);
+        let MockSequence = createClass("MockSequence", Sequence);
         let seq = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
@@ -72,7 +71,7 @@ export default class Test {
     }
 
     static TEST_SequenceTwoChildrenContinues() {
-        let MockSequence = createInstance("MockSequence", Sequence);
+        let MockSequence = createClass("MockSequence", Sequence);
         let seq = new MockSequence(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
@@ -88,7 +87,7 @@ export default class Test {
     static TEST_SequenceOneChildPassThrough() {
         let status: number[] = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
-            let MockSequence = createInstance("MockSequence", Sequence);
+            let MockSequence = createClass("MockSequence", Sequence);
             let seq = new MockSequence(1);
             Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
             Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
@@ -100,7 +99,7 @@ export default class Test {
     }
 
     static TEST_SelectorTwoChildrenContinues() {
-        let MockSelector = createInstance("MockSelector", Selector);
+        let MockSelector = createClass("MockSelector", Selector);
         let seq = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
@@ -112,7 +111,7 @@ export default class Test {
     }
 
     static TEST_SelectorTwoChildrenSucceeds() {
-        let MockSelector = createInstance("MockSelector", Selector);
+        let MockSelector = createClass("MockSelector", Selector);
         let seq = new MockSelector(2);
 
         Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
@@ -127,7 +126,7 @@ export default class Test {
         let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
         for (let i = 0; i < status.length; i++) {
             {
-                let MockSelector = createInstance("MockSelector", Selector);
+                let MockSelector = createClass("MockSelector", Selector);
                 let seq = new MockSelector(1);
 
                 Test.CHECK_EQUAL(seq.tick(), Status.BH_RUNNING);
@@ -189,7 +188,7 @@ export default class Test {
     }
 
     static TEST_ActiveBinarySelector() {
-        let MockActiveSelector = createInstance("MockActiveSelector", ActiveSelector);
+        let MockActiveSelector = createClass("MockActiveSelector", ActiveSelector);
         let sel = new MockActiveSelector(2);
 
         sel.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
