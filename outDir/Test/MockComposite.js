@@ -1,52 +1,48 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const MockBehavior_1 = require("./MockBehavior");
-// export class MockSelector extends Selector {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-// export class MockSequence extends Sequence {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-// export class MockActiveSelector extends ActiveSelector {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-function createInstance(fname, ftype) {
+const Composite_1 = require("./../BehaviorTreeShared/Composite");
+const MockNode_1 = require("../BehaviorTreeShared/MockNode");
+const Test_1 = __importDefault(require("./Test"));
+function createClass(fname, ftype) {
     let c = class extends ftype {
         constructor(size) {
             super();
-            createSize(this, size);
+            for (let i = 0; i < size; i++) {
+                this.m_Children.push(new MockBehavior_1.MockBehavior);
+            }
         }
         getOperator(index) {
-            return getMock(this, index);
+            return this.m_Children[index];
         }
     };
     return c;
 }
-exports.createInstance = createInstance;
-function createSize(target, size) {
-    for (let i = 0; i < size; i++) {
-        target.m_Children.push(new MockBehavior_1.MockBehavior);
-    }
+exports.createClass = createClass;
+function createClass1(fname, ftype) {
+    let c = class extends Composite_1.Composite {
+        constructor(size) {
+            super();
+            for (let i = 0; i < size; i++) {
+                this.m_Children.push(new MockNode_1.MockNode);
+            }
+        }
+        getOperator(index) {
+            Test_1.default.ASSERT(index < this.m_Children.length);
+            let task = this.m_Children[index].m_pTask;
+            Test_1.default.ASSERT(task != null);
+            return task;
+        }
+        create() {
+            return new ftype(this);
+        }
+        destroy(t) {
+        }
+    };
+    return c;
 }
-function getMock(target, index) {
-    return target.m_Children[index];
-}
+exports.createClass1 = createClass1;
 //# sourceMappingURL=MockComposite.js.map

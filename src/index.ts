@@ -28,6 +28,15 @@ Test.TEST_ParallelFailureRequireOne()
 
 Test.TEST_ActiveBinarySelector()
 
-// Test.TEST_TaskInitialize();
-// Test.TEST_TaskUpdate();
-// Test.TEST_TaskTerminate();
+
+Test.TEST_TaskInitialize_Node()
+
+Test.TEST_TaskUpdate_Node()
+
+Test.TEST_TaskTerminate_Node()
+
+Test.TEST_SequenceTwoFails()
+
+Test.TEST_SequenceTwoContinues()
+
+Test.TEST_SequenceOnePassThrough()

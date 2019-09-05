@@ -14,7 +14,7 @@ export class Sequence extends Task {
         super(node);
         this.m_CurrentIndex = 0;
         this.m_CurrentChild = Default.UNDEFINED;
-        this.m_CurrentBehavior = Default.UNDEFINED;
+        this.m_CurrentBehavior = new Behavior(Default.UNDEFINED);
     }
 
     getNode(): Composite {

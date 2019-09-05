@@ -5,10 +5,12 @@ import { Status } from "../Enum/Status";
 import { Policy } from "../Enum/Policy";
 import { MockBehavior } from "./MockBehavior";
 import { MockNode } from "../BehaviorTreeShared/MockNode";
-import { Behavior } from "../BehaviorTreeShared/Behavior";
-import { createClass } from './MockComposite';
+import { createClass, createClass1 } from './MockComposite';
 import { Sequence } from '../BehaviorTree/Sequence';
 import { Selector } from '../BehaviorTree/Selector';
+import { Sequence as SequenceShared } from './../BehaviorTreeShared/Sequence';
+import { Behavior as BehaviorShared } from "../BehaviorTreeShared/Behavior";
+import { Behavior } from '../BehaviorTree/Behavior';
 
 //  测试相关
 export default class Test {
@@ -222,9 +224,9 @@ export default class Test {
     }
 
 
-    TEST_TaskInitialize() {
+    static TEST_TaskInitialize_Node() {
         let n = new MockNode;
-        let b = new Behavior(n);
+        let b = new BehaviorShared(n);
 
         let t = b.get<MockTask>();
 
@@ -234,9 +236,9 @@ export default class Test {
         Test.CHECK_EQUAL(1, t.m_iInitializeCalled);
     };
 
-    TEST_TaskUpdate() {
+    static TEST_TaskUpdate_Node() {
         let n = new MockNode;
-        let b = new Behavior(n);
+        let b = new BehaviorShared(n);
 
         let t = b.get<MockTask>();
         Test.CHECK_EQUAL(0, t.m_iUpdateCalled);
@@ -245,9 +247,9 @@ export default class Test {
         Test.CHECK_EQUAL(1, t.m_iUpdateCalled);
     };
 
-    TEST_TaskTerminate() {
+    static TEST_TaskTerminate_Node() {
         let n = new MockNode;
-        let b = new Behavior(n);
+        let b = new BehaviorShared(n);
         b.tick();
 
         let t = b.get<MockTask>();
@@ -257,4 +259,46 @@ export default class Test {
         b.tick();
         Test.CHECK_EQUAL(1, t.m_iTerminateCalled);
     };
+
+    static TEST_SequenceTwoFails() {
+        let MockSequenceShared = createClass1("MockSequence", SequenceShared);
+        let seq = new MockSequenceShared(2);
+        let bh = new BehaviorShared(seq);
+
+        Test.CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
+        Test.CHECK_EQUAL(bh.tick(), Status.BH_FAILURE);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+
+    static TEST_SequenceTwoContinues() {
+        let MockSequenceShared = createClass1("MockSequence", SequenceShared);
+        let seq = new MockSequenceShared(2);
+        let bh = new BehaviorShared(seq);
+
+        Test.CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq.getOperator(0).m_eReturnStatus = Status.BH_SUCCESS;
+        Test.CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+
+    static TEST_SequenceOnePassThrough() {
+        let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
+        for (let i = 0; i < 2; i++) {
+            let MockSequenceShared = createClass1("MockSequence", SequenceShared);
+            let seq = new MockSequenceShared(1);
+            let bh = new BehaviorShared(seq);
+
+            Test.CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+            Test.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+            seq.getOperator(0).m_eReturnStatus = status[i];
+            Test.CHECK_EQUAL(bh.tick(), status[i]);
+            Test.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        }
+    }
 }

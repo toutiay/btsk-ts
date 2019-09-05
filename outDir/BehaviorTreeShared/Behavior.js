@@ -11,7 +11,7 @@ class Behavior {
         this.m_pTask = Default_1.Default.UNDEFINED;
         this.m_pNode = Default_1.Default.UNDEFINED;
         this.m_eStatus = Status_1.Status.BH_INVALID;
-        this.setup(node);
+        node && this.setup(node);
     }
     setup(node) {
         this.teardown();

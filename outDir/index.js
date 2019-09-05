@@ -18,7 +18,10 @@ Test_1.default.TEST_ParallelSucceedRequireOne();
 Test_1.default.TEST_ParallelFailureRequireAll();
 Test_1.default.TEST_ParallelFailureRequireOne();
 Test_1.default.TEST_ActiveBinarySelector();
-// Test.TEST_TaskInitialize();
-// Test.TEST_TaskUpdate();
-// Test.TEST_TaskTerminate();
+Test_1.default.TEST_TaskInitialize_Node();
+Test_1.default.TEST_TaskUpdate_Node();
+Test_1.default.TEST_TaskTerminate_Node();
+Test_1.default.TEST_SequenceTwoFails();
+Test_1.default.TEST_SequenceTwoContinues();
+Test_1.default.TEST_SequenceOnePassThrough();
 //# sourceMappingURL=index.js.map

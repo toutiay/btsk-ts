@@ -15,7 +15,7 @@ export class Behavior {
         this.m_pTask = Default.UNDEFINED;
         this.m_pNode = Default.UNDEFINED;
         this.m_eStatus = Status.BH_INVALID;
-        this.setup(node);
+        node && this.setup(node);
     }
 
     setup(node: Node) {

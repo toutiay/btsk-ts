@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Default_1 = require("./../Enum/Default");
 const Task_1 = require("./Task");
+const Behavior_1 = require("./Behavior");
 const Status_1 = require("../Enum/Status");
 class Sequence extends Task_1.Task {
     constructor(node) {
         super(node);
         this.m_CurrentIndex = 0;
         this.m_CurrentChild = Default_1.Default.UNDEFINED;
-        this.m_CurrentBehavior = Default_1.Default.UNDEFINED;
+        this.m_CurrentBehavior = new Behavior_1.Behavior(Default_1.Default.UNDEFINED);
     }
     getNode() {
         return this.m_pNode;

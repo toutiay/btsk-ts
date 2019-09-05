@@ -1,48 +1,13 @@
-import { Selector } from "../BehaviorTree/Selector";
+import { Task } from './../BehaviorTreeShared/Task';
 import { MockBehavior } from "./MockBehavior";
-import { Sequence } from "../BehaviorTree/Sequence";
-import { ActiveSelector } from "../BehaviorTree/ActiveSelector";
 import { Composite } from "../BehaviorTree/Composite";
-
-// export class MockSelector extends Selector {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-
-// export class MockSequence extends Sequence {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-
-// export class MockActiveSelector extends ActiveSelector {
-//     constructor(size: number) {
-//         super();
-//         createSize(this, size);
-//     }
-
-//     getOperator(index: number): MockBehavior {
-//         return getMock(this, index);
-//     }
-// }
-
-// function create<T>(c: { new(): T; }): T {
-//     return new c();
-// }
+import { Composite as CompositeShared } from './../BehaviorTreeShared/Composite';
+import { MockNode } from "../BehaviorTreeShared/MockNode";
+import Test from "./Test";
+import { MockTask } from "../BehaviorTreeShared/MockTask";
 
 export function createClass(fname: String, ftype: { new(): Composite; }) {
-    let c: any = class extends ftype {
+    let c = class extends ftype {
         constructor(size: number) {
             super();
             for (let i = 0; i < size; i++) {
@@ -54,6 +19,32 @@ export function createClass(fname: String, ftype: { new(): Composite; }) {
             return this.m_Children[index] as MockBehavior;
         }
     }
-    c.name = fname;
+    return c;
+}
+
+export function createClass1(fname: String, ftype: { new(node: CompositeShared): Task; }) {
+    let c = class extends CompositeShared {
+        constructor(size: number) {
+            super();
+            for (let i = 0; i < size; i++) {
+                this.m_Children.push(new MockNode);
+            }
+        }
+
+        getOperator(index: number): MockTask {
+            Test.ASSERT(index < this.m_Children.length);
+            let task = (this.m_Children[index] as MockNode).m_pTask;
+            Test.ASSERT(task != null);
+            return task;
+        }
+
+        create(): Task {
+            return new ftype(this);
+        }
+
+        destroy(t: Task) {
+
+        }
+    }
     return c;
 }
