@@ -4,20 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Test_1 = __importDefault(require("./Test/Test"));
-Test_1.default.TEST_TaskInitialize();
-Test_1.default.TEST_TaskUpdate();
-Test_1.default.TEST_TaskTerminate();
-Test_1.default.TEST_SequenceTwoChildrenFails();
-Test_1.default.TEST_SequenceTwoChildrenContinues();
-Test_1.default.TEST_SequenceOneChildPassThrough();
-Test_1.default.TEST_SelectorTwoChildrenContinues();
-Test_1.default.TEST_SelectorTwoChildrenSucceeds();
-Test_1.default.TEST_SelectorOneChildPassThrough();
-Test_1.default.TEST_ParallelSucceedRequireAll();
-Test_1.default.TEST_ParallelSucceedRequireOne();
-Test_1.default.TEST_ParallelFailureRequireAll();
-Test_1.default.TEST_ParallelFailureRequireOne();
-Test_1.default.TEST_ActiveBinarySelector();
+// Test.TEST_TaskInitialize()
+// Test.TEST_TaskUpdate()
+// Test.TEST_TaskTerminate()
+// Test.TEST_SequenceTwoChildrenFails()
+// Test.TEST_SequenceTwoChildrenContinues()
+// Test.TEST_SequenceOneChildPassThrough()
+// Test.TEST_SelectorTwoChildrenContinues()
+// Test.TEST_SelectorTwoChildrenSucceeds()
+// Test.TEST_SelectorOneChildPassThrough()
+// Test.TEST_ParallelSucceedRequireAll()
+// Test.TEST_ParallelSucceedRequireOne()
+// Test.TEST_ParallelFailureRequireAll()
+// Test.TEST_ParallelFailureRequireOne()
+// Test.TEST_ActiveBinarySelector()
 Test_1.default.TEST_TaskInitialize_Node();
 Test_1.default.TEST_TaskUpdate_Node();
 Test_1.default.TEST_TaskTerminate_Node();

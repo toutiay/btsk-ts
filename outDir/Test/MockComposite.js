@@ -7,8 +7,8 @@ const MockBehavior_1 = require("./MockBehavior");
 const Composite_1 = require("./../BehaviorTreeShared/Composite");
 const MockNode_1 = require("../BehaviorTreeShared/MockNode");
 const Test_1 = __importDefault(require("./Test"));
-function createClass(fname, ftype) {
-    let c = class extends ftype {
+function createClass(fname, COMPOSITE) {
+    let c = class extends COMPOSITE {
         constructor(size) {
             super();
             for (let i = 0; i < size; i++) {
@@ -22,7 +22,7 @@ function createClass(fname, ftype) {
     return c;
 }
 exports.createClass = createClass;
-function createClass1(fname, ftype) {
+function createClass1(fname, TASK) {
     let c = class extends Composite_1.Composite {
         constructor(size) {
             super();
@@ -37,7 +37,7 @@ function createClass1(fname, ftype) {
             return task;
         }
         create() {
-            return new ftype(this);
+            return new TASK(this);
         }
         destroy(t) {
         }

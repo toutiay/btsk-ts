@@ -6,8 +6,8 @@ import { MockNode } from "../BehaviorTreeShared/MockNode";
 import Test from "./Test";
 import { MockTask } from "../BehaviorTreeShared/MockTask";
 
-export function createClass(fname: String, ftype: { new(): Composite; }) {
-    let c = class extends ftype {
+export function createClass(fname: String, COMPOSITE: { new(): Composite; }) {
+    let c = class extends COMPOSITE {
         constructor(size: number) {
             super();
             for (let i = 0; i < size; i++) {
@@ -22,7 +22,7 @@ export function createClass(fname: String, ftype: { new(): Composite; }) {
     return c;
 }
 
-export function createClass1(fname: String, ftype: { new(node: CompositeShared): Task; }) {
+export function createClass1(fname: String, TASK: { new(node: CompositeShared): Task; }) {
     let c = class extends CompositeShared {
         constructor(size: number) {
             super();
@@ -39,7 +39,7 @@ export function createClass1(fname: String, ftype: { new(node: CompositeShared):
         }
 
         create(): Task {
-            return new ftype(this);
+            return new TASK(this);
         }
 
         destroy(t: Task) {
