@@ -1,3 +1,4 @@
+import { Selector } from './../BehaviorTree/Selector';
 import { ActiveSelector } from './../BehaviorTree/ActiveSelector';
 import { MockTask } from './../BehaviorTreeShared/MockTask';
 import { Parallel } from "../BehaviorTree/Parallel";
@@ -7,7 +8,7 @@ import { MockBehavior } from "./MockBehavior";
 import { MockNode } from "../BehaviorTreeShared/MockNode";
 import { createClass, createClass1 } from './MockComposite';
 import { Sequence } from '../BehaviorTree/Sequence';
-import { Selector } from '../BehaviorTree/Selector';
+import { Selector as SelectorShared } from '../BehaviorTreeShared/Selector';
 import { Sequence as SequenceShared } from './../BehaviorTreeShared/Sequence';
 import { Behavior as BehaviorShared } from "../BehaviorTreeShared/Behavior";
 
@@ -71,6 +72,12 @@ export function testAll() {
     Test.TEST_SequenceTwoContinues()
 
     Test.TEST_SequenceOnePassThrough()
+
+    Test.TEST_SelectorOnePassThrough();
+
+    Test.TEST_SelectorTwoContinues();
+
+    Test.TEST_SelectorTwoSucceeds();
 }
 
 //  测试相关
@@ -342,5 +349,47 @@ export default class Test {
             CHECK_EQUAL(bh.tick(), status[i]);
             CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         }
+    }
+
+    static TEST_SelectorOnePassThrough() {
+        let status = [Status.BH_SUCCESS, Status.BH_FAILURE];
+        for (let i = 0; i < 2; ++i) {
+            let MockSelectorShared = createClass1("MockSelector", SelectorShared);
+            let seq = new MockSelectorShared(1);
+            let bh = new BehaviorShared(seq);
+
+            CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+            CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+            seq.getOperator(0).m_eReturnStatus = status[i];
+            CHECK_EQUAL(bh.tick(), status[i]);
+            CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        }
+    }
+
+    static TEST_SelectorTwoContinues() {
+        let MockSelectorShared = createClass1("MockSelector", SelectorShared);
+        let seq = new MockSelectorShared(2);
+        let bh = new BehaviorShared(seq);
+
+        CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq.getOperator(0).m_eReturnStatus = Status.BH_FAILURE;
+        CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+
+    static TEST_SelectorTwoSucceeds() {
+        let MockSelectorShared = createClass1("MockSelector", SelectorShared);
+        let seq = new MockSelectorShared(2);
+        let bh = new BehaviorShared(seq);
+
+        CHECK_EQUAL(bh.tick(), Status.BH_RUNNING);
+        CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+
+        seq.getOperator(0).m_eReturnStatus = Status.BH_SUCCESS;
+        CHECK_EQUAL(bh.tick(), Status.BH_SUCCESS);
+        CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
 }

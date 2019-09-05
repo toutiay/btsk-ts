@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const Selector_1 = require("./../BehaviorTree/Selector");
 const ActiveSelector_1 = require("./../BehaviorTree/ActiveSelector");
 const Parallel_1 = require("../BehaviorTree/Parallel");
 const Status_1 = require("../Enum/Status");
@@ -8,7 +9,7 @@ const MockBehavior_1 = require("./MockBehavior");
 const MockNode_1 = require("../BehaviorTreeShared/MockNode");
 const MockComposite_1 = require("./MockComposite");
 const Sequence_1 = require("../BehaviorTree/Sequence");
-const Selector_1 = require("../BehaviorTree/Selector");
+const Selector_2 = require("../BehaviorTreeShared/Selector");
 const Sequence_2 = require("./../BehaviorTreeShared/Sequence");
 const Behavior_1 = require("../BehaviorTreeShared/Behavior");
 function ASSERT(bool) {
@@ -51,6 +52,9 @@ function testAll() {
     Test.TEST_SequenceTwoFails();
     Test.TEST_SequenceTwoContinues();
     Test.TEST_SequenceOnePassThrough();
+    Test.TEST_SelectorOnePassThrough();
+    Test.TEST_SelectorTwoContinues();
+    Test.TEST_SelectorTwoSucceeds();
 }
 exports.testAll = testAll;
 //  测试相关
@@ -269,6 +273,39 @@ class Test {
             CHECK_EQUAL(bh.tick(), status[i]);
             CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         }
+    }
+    static TEST_SelectorOnePassThrough() {
+        let status = [Status_1.Status.BH_SUCCESS, Status_1.Status.BH_FAILURE];
+        for (let i = 0; i < 2; ++i) {
+            let MockSelectorShared = MockComposite_1.createClass1("MockSelector", Selector_2.Selector);
+            let seq = new MockSelectorShared(1);
+            let bh = new Behavior_1.Behavior(seq);
+            CHECK_EQUAL(bh.tick(), Status_1.Status.BH_RUNNING);
+            CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+            seq.getOperator(0).m_eReturnStatus = status[i];
+            CHECK_EQUAL(bh.tick(), status[i]);
+            CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        }
+    }
+    static TEST_SelectorTwoContinues() {
+        let MockSelectorShared = MockComposite_1.createClass1("MockSelector", Selector_2.Selector);
+        let seq = new MockSelectorShared(2);
+        let bh = new Behavior_1.Behavior(seq);
+        CHECK_EQUAL(bh.tick(), Status_1.Status.BH_RUNNING);
+        CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+        seq.getOperator(0).m_eReturnStatus = Status_1.Status.BH_FAILURE;
+        CHECK_EQUAL(bh.tick(), Status_1.Status.BH_RUNNING);
+        CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    }
+    static TEST_SelectorTwoSucceeds() {
+        let MockSelectorShared = MockComposite_1.createClass1("MockSelector", Selector_2.Selector);
+        let seq = new MockSelectorShared(2);
+        let bh = new Behavior_1.Behavior(seq);
+        CHECK_EQUAL(bh.tick(), Status_1.Status.BH_RUNNING);
+        CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+        seq.getOperator(0).m_eReturnStatus = Status_1.Status.BH_SUCCESS;
+        CHECK_EQUAL(bh.tick(), Status_1.Status.BH_SUCCESS);
+        CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
 }
 exports.default = Test;
