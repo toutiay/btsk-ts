@@ -1,10 +1,10 @@
-import { Task } from './../BehaviorTreeShared/Task';
 import { MockBehavior } from "./MockBehavior";
 import { Composite } from "../BehaviorTree/Composite";
 import { Composite as CompositeShared } from './../BehaviorTreeShared/Composite';
-import { MockNode } from "../BehaviorTreeShared/MockNode";
-import Test from "./Test";
 import { MockTask } from "../BehaviorTreeShared/MockTask";
+import { MockNode } from "../BehaviorTreeShared/MockNode";
+import { Task } from './../BehaviorTreeShared/Task';
+import { ASSERT } from "./Test";
 
 export function createClass(fname: String, COMPOSITE: { new(): Composite; }) {
     let c = class extends COMPOSITE {
@@ -32,9 +32,9 @@ export function createClass1(fname: String, TASK: { new(node: CompositeShared): 
         }
 
         getOperator(index: number): MockTask {
-            Test.ASSERT(index < this.m_Children.length);
+            ASSERT(index < this.m_Children.length);
             let task = (this.m_Children[index] as MockNode).m_pTask;
-            Test.ASSERT(task != null);
+            ASSERT(task != null);
             return task;
         }
 

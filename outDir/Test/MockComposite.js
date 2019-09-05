@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const MockBehavior_1 = require("./MockBehavior");
 const Composite_1 = require("./../BehaviorTreeShared/Composite");
 const MockNode_1 = require("../BehaviorTreeShared/MockNode");
-const Test_1 = __importDefault(require("./Test"));
+const Test_1 = require("./Test");
 function createClass(fname, COMPOSITE) {
     let c = class extends COMPOSITE {
         constructor(size) {
@@ -31,9 +28,9 @@ function createClass1(fname, TASK) {
             }
         }
         getOperator(index) {
-            Test_1.default.ASSERT(index < this.m_Children.length);
+            Test_1.ASSERT(index < this.m_Children.length);
             let task = this.m_Children[index].m_pTask;
-            Test_1.default.ASSERT(task != null);
+            Test_1.ASSERT(task != null);
             return task;
         }
         create() {

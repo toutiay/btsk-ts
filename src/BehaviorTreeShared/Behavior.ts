@@ -1,5 +1,5 @@
 import { Status } from './../Enum/Status';
-import Test from '../Test/Test';
+import Test, { ASSERT } from '../Test/Test';
 import { Task } from './Task';
 import { Node } from './Node';
 import { Default } from '../Enum/Default';
@@ -29,7 +29,7 @@ export class Behavior {
             return;
         }
 
-        Test.ASSERT(this.m_eStatus != Status.BH_RUNNING);
+        ASSERT(this.m_eStatus != Status.BH_RUNNING);
 
         this.m_pNode.destroy(this.m_pTask);
 
