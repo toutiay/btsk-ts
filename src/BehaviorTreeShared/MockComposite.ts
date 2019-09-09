@@ -1,8 +1,8 @@
-import { Composite as Composite } from '../BehaviorTreeShared/Composite';
-import { MockTask } from "../BehaviorTreeShared/MockTask";
-import { MockNode } from "../BehaviorTreeShared/MockNode";
-import { Task } from '../BehaviorTreeShared/Task';
-import { ASSERT } from "../BehaviorTree/Test";
+import { ASSERT } from '../Utils';
+import { Task } from './Task';
+import { MockNode } from './MockNode';
+import { MockTask } from './MockTask';
+import { Composite } from './Composite';
 
 export function createClass(fname: String, TASK: { new(node: Composite): Task; }) {
     let c = class extends Composite {

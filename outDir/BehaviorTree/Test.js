@@ -7,25 +7,7 @@ const MockBehavior_1 = require("./MockBehavior");
 const MockComposite_1 = require("./MockComposite");
 const Sequence_1 = require("./Sequence");
 const Enum_1 = require("../Enum");
-function ASSERT(bool) {
-    if (!bool) {
-        console.log("ASSERT.bool == " + bool);
-    }
-}
-exports.ASSERT = ASSERT;
-function CHECK(X) {
-    if (!X) {
-        console.log("CHECK.X == " + X);
-    }
-}
-exports.CHECK = CHECK;
-function CHECK_EQUAL(X, Y) {
-    if (X != Y) {
-        console.log("CHECK_EQUAL.(" + X + " == " + Y + ") ");
-        console.log("CHECK_EQUAL.expected:" + (X) + " actual:" + (Y) + " ");
-    }
-}
-exports.CHECK_EQUAL = CHECK_EQUAL;
+const Utils_1 = require("../Utils");
 function testBehaviorTree() {
     TEST_TaskInitialize();
     TEST_TaskUpdate();
@@ -45,74 +27,74 @@ function testBehaviorTree() {
 exports.testBehaviorTree = testBehaviorTree;
 function TEST_TaskInitialize() {
     let t = new MockBehavior_1.MockBehavior();
-    CHECK_EQUAL(0, t.m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(0, t.m_iInitializeCalled);
     t.tick();
-    CHECK_EQUAL(1, t.m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iInitializeCalled);
 }
 function TEST_TaskUpdate() {
     let t = new MockBehavior_1.MockBehavior();
-    CHECK_EQUAL(0, t.m_iUpdateCalled);
+    Utils_1.CHECK_EQUAL(0, t.m_iUpdateCalled);
     t.tick();
-    CHECK_EQUAL(1, t.m_iUpdateCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iUpdateCalled);
 }
 function TEST_TaskTerminate() {
     let t = new MockBehavior_1.MockBehavior();
     t.tick();
-    CHECK_EQUAL(0, t.m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(0, t.m_iTerminateCalled);
     t.m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
     t.tick();
-    CHECK_EQUAL(1, t.m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iTerminateCalled);
 }
 function TEST_SequenceTwoChildrenFails() {
     let MockSequence = MockComposite_1.createClass("MockSequence", Sequence_1.Sequence);
     let seq = new MockSequence(2);
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_FAILURE;
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_FAILURE);
-    CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_FAILURE);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
 }
 function TEST_SequenceTwoChildrenContinues() {
     let MockSequence = MockComposite_1.createClass("MockSequence", Sequence_1.Sequence);
     let seq = new MockSequence(2);
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(1).m_iInitializeCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(1, seq.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(1).m_iInitializeCalled);
 }
 function TEST_SequenceOneChildPassThrough() {
     let status = [Enum_1.Status.BH_SUCCESS, Enum_1.Status.BH_FAILURE];
     for (let i = 0; i < status.length; i++) {
         let MockSequence = MockComposite_1.createClass("MockSequence", Sequence_1.Sequence);
         let seq = new MockSequence(1);
-        CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-        CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+        Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+        Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
         seq.getOperator(0).m_eReturnStatus = status[i];
-        CHECK_EQUAL(seq.tick(), status[i]);
-        CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        Utils_1.CHECK_EQUAL(seq.tick(), status[i]);
+        Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
 }
 function TEST_SelectorTwoChildrenContinues() {
     let MockSelector = MockComposite_1.createClass("MockSelector", Selector_1.Selector);
     let seq = new MockSelector(2);
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_FAILURE;
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
 }
 function TEST_SelectorTwoChildrenSucceeds() {
     let MockSelector = MockComposite_1.createClass("MockSelector", Selector_1.Selector);
     let seq = new MockSelector(2);
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_SUCCESS);
-    CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_SUCCESS);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
 }
 function TEST_SelectorOneChildPassThrough() {
     let status = [Enum_1.Status.BH_SUCCESS, Enum_1.Status.BH_FAILURE];
@@ -120,11 +102,11 @@ function TEST_SelectorOneChildPassThrough() {
         {
             let MockSelector = MockComposite_1.createClass("MockSelector", Selector_1.Selector);
             let seq = new MockSelector(1);
-            CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
-            CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+            Utils_1.CHECK_EQUAL(seq.tick(), Enum_1.Status.BH_RUNNING);
+            Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
             seq.getOperator(0).m_eReturnStatus = status[i];
-            CHECK_EQUAL(seq.tick(), status[i]);
-            CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+            Utils_1.CHECK_EQUAL(seq.tick(), status[i]);
+            Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
         }
     }
 }
@@ -133,67 +115,67 @@ function TEST_ParallelSucceedRequireAll() {
     let children = [new MockBehavior_1.MockBehavior(), new MockBehavior_1.MockBehavior()];
     parallel.addChild(children[0]);
     parallel.addChild(children[1]);
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[0].m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[1].m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(Enum_1.Status.BH_SUCCESS, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_SUCCESS, parallel.tick());
 }
 function TEST_ParallelSucceedRequireOne() {
     let parallel = new Parallel_1.Parallel(Enum_1.Policy.RequireOne, Enum_1.Policy.RequireAll);
     let children = [new MockBehavior_1.MockBehavior(), new MockBehavior_1.MockBehavior()];
     parallel.addChild(children[0]);
     parallel.addChild(children[1]);
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[0].m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(Enum_1.Status.BH_SUCCESS, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_SUCCESS, parallel.tick());
 }
 function TEST_ParallelFailureRequireAll() {
     let parallel = new Parallel_1.Parallel(Enum_1.Policy.RequireOne, Enum_1.Policy.RequireAll);
     let children = [new MockBehavior_1.MockBehavior(), new MockBehavior_1.MockBehavior()];
     parallel.addChild(children[0]);
     parallel.addChild(children[1]);
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[0].m_eReturnStatus = Enum_1.Status.BH_FAILURE;
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[1].m_eReturnStatus = Enum_1.Status.BH_FAILURE;
-    CHECK_EQUAL(Enum_1.Status.BH_FAILURE, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_FAILURE, parallel.tick());
 }
 function TEST_ParallelFailureRequireOne() {
     let parallel = new Parallel_1.Parallel(Enum_1.Policy.RequireAll, Enum_1.Policy.RequireOne);
     let children = [new MockBehavior_1.MockBehavior(), new MockBehavior_1.MockBehavior()];
     parallel.addChild(children[0]);
     parallel.addChild(children[1]);
-    CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_RUNNING, parallel.tick());
     children[0].m_eReturnStatus = Enum_1.Status.BH_FAILURE;
-    CHECK_EQUAL(Enum_1.Status.BH_FAILURE, parallel.tick());
+    Utils_1.CHECK_EQUAL(Enum_1.Status.BH_FAILURE, parallel.tick());
 }
 function TEST_ActiveBinarySelector() {
     let MockActiveSelector = MockComposite_1.createClass("MockActiveSelector", ActiveSelector_1.ActiveSelector);
     let sel = new MockActiveSelector(2);
     sel.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_FAILURE;
     sel.getOperator(1).m_eReturnStatus = Enum_1.Status.BH_RUNNING;
-    CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(1, sel.getOperator(0).m_iInitializeCalled);
-    CHECK_EQUAL(1, sel.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
-    CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
-    CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(2, sel.getOperator(0).m_iInitializeCalled);
-    CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
-    CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(0).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(2, sel.getOperator(0).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(0, sel.getOperator(1).m_iTerminateCalled);
     sel.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_RUNNING;
-    CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
-    CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
-    CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(2, sel.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
     sel.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
-    CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_SUCCESS);
-    CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
-    CHECK_EQUAL(3, sel.getOperator(0).m_iTerminateCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
-    CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(sel.tick(), Enum_1.Status.BH_SUCCESS);
+    Utils_1.CHECK_EQUAL(3, sel.getOperator(0).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(3, sel.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(1, sel.getOperator(1).m_iTerminateCalled);
 }
 //# sourceMappingURL=Test.js.map

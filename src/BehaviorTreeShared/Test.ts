@@ -1,11 +1,11 @@
 import { MockNode } from "./MockNode";
 import { Behavior } from "./Behavior";
 import { MockTask } from "./MockTask";
-import { CHECK_EQUAL } from "../BehaviorTree/Test";
 import { Selector } from "./Selector";
 import { Sequence } from "./Sequence";
 import { createClass } from "./MockComposite";
 import { Status } from "../Enum";
+import { CHECK_EQUAL } from "../Utils";
 
 export function BehaviorTreeShared() {
     TEST_TaskInitialize();

@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const MockBehavior_1 = require("./MockBehavior");
 const BehaviorTree_1 = require("./BehaviorTree");
-const Test_1 = require("../BehaviorTree/Test");
 const Sequence_1 = require("./Sequence");
 const MockComposite_1 = require("./MockComposite");
 const Enum_1 = require("../Enum");
+const Utils_1 = require("../Utils");
 function testBehaviorTreeEvent() {
     TEST_TaskInitialize();
     TEST_TaskUpdate();
@@ -19,9 +19,9 @@ function TEST_TaskInitialize() {
     let t = new MockBehavior_1.MockBehavior;
     let bt = new BehaviorTree_1.BehaviorTree;
     bt.start(t, Enum_1.Default.UNDEFINED);
-    Test_1.CHECK_EQUAL(0, t.m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(0, t.m_iInitializeCalled);
     bt.tick();
-    Test_1.CHECK_EQUAL(1, t.m_iInitializeCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iInitializeCalled);
 }
 ;
 function TEST_TaskUpdate() {
@@ -29,10 +29,10 @@ function TEST_TaskUpdate() {
     let bt = new BehaviorTree_1.BehaviorTree;
     bt.start(t, Enum_1.Default.UNDEFINED);
     bt.tick();
-    Test_1.CHECK_EQUAL(1, t.m_iUpdateCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iUpdateCalled);
     t.m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
     bt.tick();
-    Test_1.CHECK_EQUAL(2, t.m_iUpdateCalled);
+    Utils_1.CHECK_EQUAL(2, t.m_iUpdateCalled);
 }
 ;
 function TEST_TaskTerminate() {
@@ -40,10 +40,10 @@ function TEST_TaskTerminate() {
     let bt = new BehaviorTree_1.BehaviorTree;
     bt.start(t, Enum_1.Default.UNDEFINED);
     bt.tick();
-    Test_1.CHECK_EQUAL(0, t.m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(0, t.m_iTerminateCalled);
     t.m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
     bt.tick();
-    Test_1.CHECK_EQUAL(1, t.m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(1, t.m_iTerminateCalled);
 }
 ;
 function TEST_SequenceOnePassThrough() {
@@ -54,12 +54,12 @@ function TEST_SequenceOnePassThrough() {
         let seq = new MockSequence(bt, 1);
         bt.start(seq);
         bt.tick();
-        Test_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
-        Test_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+        Utils_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
+        Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
         seq.getOperator(0).m_eReturnStatus = status[i];
         bt.tick();
-        Test_1.CHECK_EQUAL(seq.m_eStatus, status[i]);
-        Test_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+        Utils_1.CHECK_EQUAL(seq.m_eStatus, status[i]);
+        Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
     }
 }
 function TEST_SequenceTwoFails() {
@@ -68,12 +68,12 @@ function TEST_SequenceTwoFails() {
     let seq = new MockSequence(bt, 2);
     bt.start(seq);
     bt.tick();
-    Test_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
-    Test_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_FAILURE;
     bt.tick();
-    Test_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_FAILURE);
-    Test_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_FAILURE);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
 }
 function TEST_SequenceTwoContinues() {
     let bt = new BehaviorTree_1.BehaviorTree;
@@ -81,11 +81,11 @@ function TEST_SequenceTwoContinues() {
     let seq = new MockSequence(bt, 2);
     bt.start(seq);
     bt.tick();
-    Test_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
-    Test_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(0, seq.getOperator(0).m_iTerminateCalled);
     seq.getOperator(0).m_eReturnStatus = Enum_1.Status.BH_SUCCESS;
     bt.tick();
-    Test_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
-    Test_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
+    Utils_1.CHECK_EQUAL(seq.m_eStatus, Enum_1.Status.BH_RUNNING);
+    Utils_1.CHECK_EQUAL(1, seq.getOperator(0).m_iTerminateCalled);
 }
 //# sourceMappingURL=Test.js.map

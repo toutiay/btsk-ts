@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Composite_1 = require("../BehaviorTreeShared/Composite");
-const MockNode_1 = require("../BehaviorTreeShared/MockNode");
-const Test_1 = require("../BehaviorTree/Test");
+const Utils_1 = require("../Utils");
+const MockNode_1 = require("./MockNode");
+const Composite_1 = require("./Composite");
 function createClass(fname, TASK) {
     let c = class extends Composite_1.Composite {
         constructor(size) {
@@ -12,9 +12,9 @@ function createClass(fname, TASK) {
             }
         }
         getOperator(index) {
-            Test_1.ASSERT(index < this.m_Children.length);
+            Utils_1.ASSERT(index < this.m_Children.length);
             let task = this.m_Children[index].m_pTask;
-            Test_1.ASSERT(task != null);
+            Utils_1.ASSERT(task != null);
             return task;
         }
         create() {

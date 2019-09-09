@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Test_1 = require("../BehaviorTree/Test");
 const Enum_1 = require("../Enum");
+const Utils_1 = require("../Utils");
 class BehaviorTree {
     constructor() {
         this.m_Behaviors = [];
@@ -13,7 +13,7 @@ class BehaviorTree {
         this.m_Behaviors.unshift(bh);
     }
     stop(bh, result) {
-        Test_1.ASSERT(result != Enum_1.Status.BH_RUNNING);
+        Utils_1.ASSERT(result != Enum_1.Status.BH_RUNNING);
         bh.m_eStatus = result;
         if (bh.m_Observer) {
             bh.m_Observer(result);

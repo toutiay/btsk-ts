@@ -1,7 +1,7 @@
-import { ASSERT } from '../BehaviorTree/Test';
 import { Task } from './Task';
 import { Node } from './Node';
 import { Default, Status } from '../Enum';
+import { ASSERT } from '../Utils';
 
 export class Behavior {
     m_pTask: Task;

@@ -1,7 +1,7 @@
 import { Composite } from "./Composite";
-import { ASSERT } from "../BehaviorTree/Test";
 import { BehaviorTree } from "./BehaviorTree";
 import { MockBehavior } from "./MockBehavior";
+import { ASSERT } from "../Utils";
 
 export function createClass(fname: String, COMPOSITE: { new(bt: BehaviorTree): Composite; }) {
     let c = class extends COMPOSITE {

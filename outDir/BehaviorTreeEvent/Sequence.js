@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Composite_1 = require("./Composite");
-const Test_1 = require("../BehaviorTree/Test");
 const Enum_1 = require("../Enum");
+const Utils_1 = require("../Utils");
 class Sequence extends Composite_1.Composite {
     constructor(bt) {
         super();
@@ -22,7 +22,7 @@ class Sequence extends Composite_1.Composite {
             this.m_pBehaviorTree.stop(this, Enum_1.Status.BH_FAILURE);
             return;
         }
-        Test_1.ASSERT(child.m_eStatus == Enum_1.Status.BH_SUCCESS);
+        Utils_1.ASSERT(child.m_eStatus == Enum_1.Status.BH_SUCCESS);
         this.m_Current = this.m_Children[++this.m_CurrentIndex];
         if (this.m_Current == null) {
             this.m_pBehaviorTree.stop(this, Enum_1.Status.BH_SUCCESS);
