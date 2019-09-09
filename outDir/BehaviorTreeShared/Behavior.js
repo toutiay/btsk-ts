@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Status_1 = require("./../Enum/Status");
-const Test_1 = require("../Test/Test");
-const Default_1 = require("../Enum/Default");
+const Test_1 = require("../BehaviorTree/Test");
+const Enum_1 = require("../Enum");
 class Behavior {
     constructor(node) {
-        this.m_pTask = Default_1.Default.UNDEFINED;
-        this.m_pNode = Default_1.Default.UNDEFINED;
-        this.m_eStatus = Status_1.Status.BH_INVALID;
+        this.m_pTask = Enum_1.Default.UNDEFINED;
+        this.m_pNode = Enum_1.Default.UNDEFINED;
+        this.m_eStatus = Enum_1.Status.BH_INVALID;
         node && this.setup(node);
     }
     setup(node) {
@@ -19,16 +18,16 @@ class Behavior {
         if (this.m_pTask == null) {
             return;
         }
-        Test_1.ASSERT(this.m_eStatus != Status_1.Status.BH_RUNNING);
+        Test_1.ASSERT(this.m_eStatus != Enum_1.Status.BH_RUNNING);
         this.m_pNode.destroy(this.m_pTask);
-        this.m_pTask = Default_1.Default.UNDEFINED;
+        this.m_pTask = Enum_1.Default.UNDEFINED;
     }
     tick() {
-        if (this.m_eStatus == Status_1.Status.BH_INVALID) {
+        if (this.m_eStatus == Enum_1.Status.BH_INVALID) {
             this.m_pTask.onInitialize();
         }
         this.m_eStatus = this.m_pTask.update();
-        if (this.m_eStatus != Status_1.Status.BH_RUNNING) {
+        if (this.m_eStatus != Enum_1.Status.BH_RUNNING) {
             this.m_pTask.onTerminate(this.m_eStatus);
         }
         return this.m_eStatus;

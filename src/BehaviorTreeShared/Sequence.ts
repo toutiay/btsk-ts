@@ -1,9 +1,8 @@
-import { Default } from './../Enum/Default';
 import { Task } from "./Task";
 import { Composite } from "./Composite";
 import { Behavior } from "./Behavior";
 import { Node } from './Node';
-import { Status } from '../Enum/Status';
+import { Status, Default } from "../Enum";
 
 export class Sequence extends Task {
     m_CurrentIndex: number;

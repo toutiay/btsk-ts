@@ -1,6 +1,6 @@
 import { Behavior } from "./Behavior";
 import { Composite } from "./Composite";
-import { Status } from "../Enum/Status";
+import { Status } from "../Enum";
 
 export class Selector extends Composite {
     m_CurrentIndex: number;

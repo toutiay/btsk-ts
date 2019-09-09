@@ -1,8 +1,7 @@
-import { Status } from './../Enum/Status';
-import Test, { ASSERT } from '../Test/Test';
+import { ASSERT } from '../BehaviorTree/Test';
 import { Task } from './Task';
 import { Node } from './Node';
-import { Default } from '../Enum/Default';
+import { Default, Status } from '../Enum';
 
 export class Behavior {
     m_pTask: Task;

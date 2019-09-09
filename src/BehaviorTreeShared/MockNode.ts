@@ -1,6 +1,6 @@
 import { Node } from "./Node";
 import { MockTask } from './MockTask';
-import { Default } from "../Enum/Default";
+import { Default } from "../Enum";
 
 export class MockNode extends Node {
     m_pTask: MockTask;

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Default_1 = require("../Enum/Default");
+const Enum_1 = require("../Enum");
 class Node {
     create() {
-        return Default_1.Default.UNDEFINED;
+        return Enum_1.Default.UNDEFINED;
     }
     destroy(t) {
     }

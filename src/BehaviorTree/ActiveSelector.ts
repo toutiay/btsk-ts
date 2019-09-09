@@ -1,6 +1,6 @@
-import { Status } from "../Enum/Status";
 import { Behavior } from "./Behavior";
 import { Selector } from "./Selector";
+import { Status } from "../Enum";
 
 export class ActiveSelector extends Selector {
     onInitialize() {

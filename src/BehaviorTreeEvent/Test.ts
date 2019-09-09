@@ -1,10 +1,9 @@
 import { MockBehavior } from "./MockBehavior";
 import { BehaviorTree } from "./BehaviorTree";
-import { Default } from "../Enum/Default";
-import { CHECK_EQUAL } from "../Test/Test";
-import { Status } from "../Enum/Status";
+import { CHECK_EQUAL } from "../BehaviorTree/Test";
 import { Sequence } from "./Sequence";
 import { createClass } from "./MockComposite";
+import { Default, Status } from "../Enum";
 
 export function testBehaviorTreeEvent() {
     TEST_TaskInitialize();

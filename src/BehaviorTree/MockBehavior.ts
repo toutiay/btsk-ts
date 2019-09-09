@@ -1,5 +1,5 @@
-import { Behavior } from "../BehaviorTree/Behavior";
-import { Status } from "../Enum/Status";
+import { Behavior } from "./Behavior";
+import { Status } from "../Enum";
 
 export class MockBehavior extends Behavior {
     m_iInitializeCalled: number;

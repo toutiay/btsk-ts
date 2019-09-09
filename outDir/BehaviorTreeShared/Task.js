@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Status_1 = require("./../Enum/Status");
+const Enum_1 = require("../Enum");
 class Task {
     constructor(node) {
         this.m_pNode = node;
     }
     update() {
-        return Status_1.Status.BH_INVALID;
+        return Enum_1.Status.BH_INVALID;
     }
     onInitialize() { }
     onTerminate(s) { }

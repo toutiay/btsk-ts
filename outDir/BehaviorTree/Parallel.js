@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Composite_1 = require("./Composite");
-const Status_1 = require("../Enum/Status");
-const Policy_1 = require("../Enum/Policy");
+const Enum_1 = require("../Enum");
 class Parallel extends Composite_1.Composite {
     constructor(forSuccess, forFailure) {
         super();
@@ -16,26 +15,26 @@ class Parallel extends Composite_1.Composite {
             if (!b.isTerminated()) {
                 b.tick();
             }
-            if (b.getStatus() == Status_1.Status.BH_SUCCESS) {
+            if (b.getStatus() == Enum_1.Status.BH_SUCCESS) {
                 ++iSuccessCount;
-                if (this.m_eSuccessPolicy == Policy_1.Policy.RequireOne) {
-                    return Status_1.Status.BH_SUCCESS;
+                if (this.m_eSuccessPolicy == Enum_1.Policy.RequireOne) {
+                    return Enum_1.Status.BH_SUCCESS;
                 }
             }
-            if (b.getStatus() == Status_1.Status.BH_FAILURE) {
+            if (b.getStatus() == Enum_1.Status.BH_FAILURE) {
                 ++iFailureCount;
-                if (this.m_eFailurePolicy == Policy_1.Policy.RequireOne) {
-                    return Status_1.Status.BH_FAILURE;
+                if (this.m_eFailurePolicy == Enum_1.Policy.RequireOne) {
+                    return Enum_1.Status.BH_FAILURE;
                 }
             }
         }
-        if (this.m_eFailurePolicy == Policy_1.Policy.RequireAll && iFailureCount == this.m_Children.length) {
-            return Status_1.Status.BH_FAILURE;
+        if (this.m_eFailurePolicy == Enum_1.Policy.RequireAll && iFailureCount == this.m_Children.length) {
+            return Enum_1.Status.BH_FAILURE;
         }
-        if (this.m_eSuccessPolicy == Policy_1.Policy.RequireAll && iSuccessCount == this.m_Children.length) {
-            return Status_1.Status.BH_SUCCESS;
+        if (this.m_eSuccessPolicy == Enum_1.Policy.RequireAll && iSuccessCount == this.m_Children.length) {
+            return Enum_1.Status.BH_SUCCESS;
         }
-        return Status_1.Status.BH_RUNNING;
+        return Enum_1.Status.BH_RUNNING;
     }
     onTerminate() {
         for (let i = 0; i < this.m_Children.length; i++) {

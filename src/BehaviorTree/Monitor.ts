@@ -1,6 +1,6 @@
-import { Policy } from "../Enum/Policy";
 import { Behavior } from "./Behavior";
 import { Parallel } from "./Parallel";
+import { Policy } from "../Enum";
 
 export class Monitor extends Parallel {
     constructor() {

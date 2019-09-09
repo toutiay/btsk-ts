@@ -1,7 +1,6 @@
 import { Behavior } from "./Behavior";
-import { ASSERT } from "../Test/Test";
-import { Status } from "../Enum/Status";
-import { Default } from "../Enum/Default";
+import { ASSERT } from "../BehaviorTree/Test";
+import { Default, Status } from "../Enum";
 
 export class BehaviorTree {
     m_Behaviors: Behavior[] = [];

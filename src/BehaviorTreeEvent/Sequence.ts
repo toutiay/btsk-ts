@@ -1,9 +1,8 @@
 import { Composite } from "./Composite";
 import { BehaviorTree } from "./BehaviorTree";
 import { Behavior } from "./Behavior";
-import { Default } from "../Enum/Default";
-import { Status } from "../Enum/Status";
-import { ASSERT } from "../Test/Test";
+import { ASSERT } from "../BehaviorTree/Test";
+import { Default, Status } from "../Enum";
 
 export class Sequence extends Composite {
     m_pBehaviorTree: BehaviorTree;

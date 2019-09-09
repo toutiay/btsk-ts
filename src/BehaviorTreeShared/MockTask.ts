@@ -1,6 +1,6 @@
-import { Status } from './../Enum/Status';
 import { Task } from './Task';
 import { Node } from './Node';
+import { Status } from '../Enum';
 
 export class MockTask extends Task {
     m_iInitializeCalled: number;

@@ -1,9 +1,8 @@
 import { Task } from './Task';
 import { Composite } from './Composite';
-import { Default } from '../Enum/Default';
 import { Behavior } from './Behavior';
 import { Node } from './Node';
-import { Status } from '../Enum/Status';
+import { Default, Status } from '../Enum';
 
 export class Selector extends Task {
     m_CurrentIndex: number;

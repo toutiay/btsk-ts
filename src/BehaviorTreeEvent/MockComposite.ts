@@ -1,5 +1,5 @@
 import { Composite } from "./Composite";
-import { ASSERT } from "../Test/Test";
+import { ASSERT } from "../BehaviorTree/Test";
 import { BehaviorTree } from "./BehaviorTree";
 import { MockBehavior } from "./MockBehavior";
 

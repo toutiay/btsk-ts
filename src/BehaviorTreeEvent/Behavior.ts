@@ -1,5 +1,5 @@
-import { Status } from "../Enum/Status";
-import { Default } from "../Enum/Default";
+import { Status, Default } from "../Enum";
+
 
 export class Behavior {
     m_eStatus: number;

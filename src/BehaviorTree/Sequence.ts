@@ -1,7 +1,6 @@
-import { Default } from './../Enum/Default';
 import { Behavior } from "./Behavior";
 import { Composite } from "./Composite";
-import { Status } from "../Enum/Status";
+import { Default, Status } from "../Enum";
 
 export class Sequence extends Composite {
     m_CurrentIndex: number;

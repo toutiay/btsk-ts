@@ -1,5 +1,5 @@
 import { Task } from "./Task";
-import { Default } from "../Enum/Default";
+import { Default } from "../Enum";
 
 export class Node {
 

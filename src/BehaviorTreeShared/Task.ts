@@ -1,5 +1,5 @@
-import { Status } from './../Enum/Status';
 import { Node } from './Node';
+import { Status } from '../Enum';
 export class Task {
     m_pNode: Node;
     constructor(node: Node) {
