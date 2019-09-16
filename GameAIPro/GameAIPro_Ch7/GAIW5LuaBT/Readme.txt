@@ -1,0 +1,1 @@
+For the code sample, you'll need to download lua 5.1 here (http://www.lua.org/ftp/lua-5.1.5.tar.gz) and put the lua5.1.lib at the same location as the .sln file.
