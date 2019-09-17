@@ -1,1 +1,1 @@
-# btsk的js版本
+# btsk的ts版本
